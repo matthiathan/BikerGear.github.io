@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign-Up - Handmade Paracord Creations</title>
+    <title>Sign-Up - Biker Handmade Paracord Creations</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -15,6 +15,7 @@
                 <li><a href="gallery.html">Gallery</a></li>
                 <li><a href="contact.html">Contact</a></li>
                 <li><a href="about.html">About Us</a></li>
+                <li><a href="signup.html">Sign Up</a></li>
                 <li><a href="login.html">Login</a></li>
             </ul>
         </nav>
@@ -32,7 +33,6 @@
 
                 <button type="submit">Create Account</button>
             </form>
-            <p id="signup-message"></p>
         </section>
     </main>
 
@@ -41,5 +41,24 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        document.getElementById('signup-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const userExists = users.some(user => user.email === email);
+
+            if (userExists) {
+                alert('Email already exists. Please log in.');
+            } else {
+                users.push({ email, password });
+                localStorage.setItem('users', JSON.stringify(users));
+                alert('Account created successfully! You can now log in.');
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
 </body>
 </html>

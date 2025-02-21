@@ -1,45 +1,59 @@
 body {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background: #1a1a1a;
-    color: #fff;
+    background-color: #f4f4f4;
 }
 
 header {
-    background: #333;
-    color: #fff;
-    padding: 20px 0;
+    background: #35424a;
+    color: #ffffff;
+    padding: 15px 0;
     text-align: center;
-    border-bottom: 3px solid #ff9900;
+}
+
+header h1 {
+    margin: 0;
 }
 
 nav ul {
-    list-style-type: none;
+    list-style: none;
     padding: 0;
 }
 
-nav ul li {
+nav li {
     display: inline;
     margin: 0 15px;
 }
 
 nav a {
-    color: #fff;
+    color: #ffffff;
     text-decoration: none;
-    font-weight: bold;
+}
+
+nav a:hover {
+    text-decoration: underline;
 }
 
 main {
     padding: 20px;
 }
 
+footer {
+    text-align: center;
+    padding: 15px 0;
+    background: #35424a;
+    color: white;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
 .product {
-    border: 2px solid #ff9900;
-    border-radius: 5px;
-    background: #2a2a2a;
-    padding: 15px;
-    margin: 15px 0;
+    margin: 20px 0;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: white;
 }
 
 .product img {
@@ -47,52 +61,133 @@ main {
     height: auto;
 }
 
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px;
+#quantity-modal {
+    display: none; /* Start as hidden */
 }
 
-.gallery-grid img {
+.modal {
+    display: none; /* CSS to hide modal */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
     width: 100%;
-    border: 2px solid #ff9900;
-    border-radius: 5px;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 100px;
 }
 
-footer {
-    text-align: center;
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
     padding: 20px;
-    background: #333;
-    color: #fff;
-    position: relative;
-    width: 100%;
-}
-
-form {
+    border: 1px solid #888;
+    width: 400px;
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
-form label {
-    margin: 5px 0;
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
 }
 
-form input, form textarea {
-    margin: 5px 0 15px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-button {
-    background: #ff9900;
-    border: none;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
     cursor: pointer;
 }
 
-button:hover {
-    background: #fb7e00; /* Darker hover effect */
+.quantity-control {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.quantity-control input {
+    width: 50px;
+    text-align: center;
+    margin: 0 10px;
+    font-size: 16px;
+}
+
+.quantity-control button {
+    background-color: #4CAF50; 
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.quantity-control button:hover {
+    background-color: #45a049; 
+}
+
+#basket-icon {
+    position: relative;
+    cursor: pointer;
+}
+
+#basket-count {
+    position: absolute;
+    top: -30px;
+    right: -20px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 5px 10px;
+    font-size: 14px;
+}
+
+#checkout-button {
+    background-color: #4CAF50; 
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#checkout-button:hover {
+    background-color: #45a049;
+}
+
+.remove-control {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.remove-control input {
+    width: 40px;
+    text-align: center;
+    margin-right: 5px;
+}
+
+.remove-control button {
+    background-color: #f44336; 
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    display: inline-block;
+    font-size: 14px;
+}
+
+.remove-control button:hover {
+    background-color: #d32f2f; 
 }

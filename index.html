@@ -3,24 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - Handmade Paracord Creations</title>
+    <title>Home - Biker Handmade Paracord Creations</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script>
-       // Your web app's Firebase configuration
-       const firebaseConfig = {
-		apiKey: "AIzaSyDK35kZiiAj7k52U6-GZcXpvIZ09D0aWl4",
-		authDomain: "lucaweb-170cd.firebaseapp.com",
-		projectId: "lucaweb-170cd",
-		storageBucket: "lucaweb-170cd.firebasestorage.app",
-		messagingSenderId: "250427249511",
-		appId: "1:250427249511:web:b83fd31141ab8ef23f15c2"
-		};
-       // Initialize Firebase
-       const app = firebase.initializeApp(firebaseConfig);
-       const auth = firebase.auth();
-    </script>
 </head>
 <body>
     <header>
@@ -35,6 +19,10 @@
                 <li><a href="login.html">Login</a></li>
             </ul>
         </nav>
+        <a href="basket.html" id="basket-icon">
+            <img src="basket-icon.png" alt="Basket Icon" style="width: 30px; height: 30px;">
+            <span id="basket-count">0</span> <!-- Initial count set to 0 -->
+        </a>
     </header>
 
     <main>
@@ -47,7 +35,13 @@
                 <p>Price: $10.00</p>
                 <button onclick="openModal('Paracord Bracelet', 10)">Add to Basket</button>
             </div>
-            <!-- Additional products can be added here -->
+            <div class="product" id="window-breaker">
+                <h3>Window Breaker</h3>
+                <img src="images/window-breaker.jpg" alt="Window Breaker">
+                <p>Essential tool for emergencies, handmade with care.</p>
+                <p>Price: $15.00</p>
+                <button onclick="openModal('Window Breaker', 15)">Add to Basket</button>
+            </div>
         </section>
     </main>
 
@@ -55,6 +49,78 @@
         <p>© 2023 Handmade Paracord Creations</p>
     </footer>
 
+    <!-- Modal for Quantity Selection -->
+    <div id="quantity-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">×</span>
+            <h2>Quantity</h2>
+            <p id="modal-product-name"></p>
+            <div class="quantity-control">
+                <button onclick="changeQuantity(-1)">−</button>
+                <input type="number" id="modal-quantity" min="1" value="1" />
+                <button onclick="changeQuantity(1)">+</button>
+            </div>
+            <br>
+            <button onclick="addToBasketFromModal()">Add to Basket</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
+    <script>
+        const basket = JSON.parse(localStorage.getItem('basket')) || {};
+        let currentProduct = '';
+        let currentPrice = 0;
+
+        function openModal(productName, price) {
+            currentProduct = productName;
+            currentPrice = price;
+            document.getElementById('modal-product-name').textContent = `Product: ${productName} - Price: $${price.toFixed(2)}`;
+            document.getElementById('quantity-modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('quantity-modal').style.display = 'none';
+        }
+
+        function changeQuantity(amount) {
+            const quantityInput = document.getElementById('modal-quantity');
+            let currentQuantity = parseInt(quantityInput.value);
+            if (currentQuantity + amount >= 1) {
+                quantityInput.value = currentQuantity + amount;
+            }
+        }
+
+        function addToBasketFromModal() {
+            const quantity = parseInt(document.getElementById('modal-quantity').value);
+            if (quantity <= 0) return;
+
+            if (basket[currentProduct]) {
+                basket[currentProduct].quantity += quantity;
+            } else {
+                basket[currentProduct] = { price: currentPrice, quantity: quantity };
+            }
+
+            localStorage.setItem('basket', JSON.stringify(basket));
+            updateBasketCount();
+            closeModal();
+        }
+
+        function updateBasketCount() {
+            const count = Object.values(basket).reduce((acc, product) => acc + product.quantity, 0);
+            document.getElementById('basket-count').textContent = count;
+        }
+
+        window.onload = function() {
+            updateBasketCount();
+        };
+
+        // Close the modal when clicking anywhere outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('quantity-modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
 </body>
 </html>

@@ -105,7 +105,13 @@
     <p>&copy; 2023 Handmade Paracord Creations</p>
 </footer>
 
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 <script>
+    // Initialize EmailJS with your user ID
+    (function() {
+        emailjs.init("YOUR_USER_ID"); // replace with your user ID
+    })();
+
     const basket = JSON.parse(localStorage.getItem('basket')) || {};
     const basketItems = document.getElementById('basket-items');
     const totalPriceElem = document.getElementById('total-price');
@@ -167,36 +173,25 @@
             const { price, quantity } = basket[product];
             orderDetails.push(`${product} - Quantity: ${quantity} - Total Price: $${(price * quantity).toFixed(2)}`);
         }
-        
+
         const emailContent = {
-            to: 'mattcoombes247@gmail.com',
+            to_email: 'mattcoombes247@gmail.com', // Change this to your desired recipient
             subject: 'New Order from Biker Handmade Paracord Creations',
             message: `New Order:\n\n${orderDetails.join('\n')}\n\nTotal: $${totalPrice.toFixed(2)}`
         };
 
-        // Send the order details to the server
-        fetch('/send-email', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(emailContent)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
+        // Send the order details using EmailJS
+        emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', emailContent)
+            .then((response) => {
+                console.log('Email sent successfully:', response);
                 alert('Thank you for your order! A confirmation email has been sent.');
                 // Clear the basket if needed
                 localStorage.removeItem('basket');
                 updateBasketDisplay(); // Refresh the display
-            } else {
+            }, (error) => {
+                console.error('Error sending email:', error);
                 alert('There was an error with your order. Please try again.');
-            }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            alert('There was an error sending your order. Please try again.');
-        });
+            });
     }
 
     // Initial display update

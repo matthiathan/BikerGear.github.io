@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Biker Handmade Paracord Creations</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Existing modal and header styles, plus new basket icon styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0, 0, 0); /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+            padding-top: 100px; /* Location of the box */
+        }
+
+        /* Modal styles */
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto; /* Center it */
+            padding: 10px; /* Padding inside */
+            border: 1px solid #888;
+            width: 100px; /* Set width of modal */
+            height: 100px; /* Set height of modal */
+            border-radius: 10px; /* Rounded corners */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Quantity Input Styles */
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .quantity-control input {
+            width: 50px;
+            text-align: center;
+            margin: 0 10px;
+            font-size: 16px;
+        }
+
+        .quantity-control button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 0 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .quantity-control button:hover {
+            background-color: #45a049; /* Darker green */
+        }
+
+        /* New Basket Icon Styles */
+        #basket-icon {
+            position: relative;
+            cursor: pointer;
+        }
+
+        #basket-count {
+            position: absolute;
+            top: -30px;
+            right: -20px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Handmade Paracord Creations</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="about.html">About Us</a></li>
+            </ul>
+        </nav>
+        <a href="basket.html" id="basket-icon">
+            <img src="images/basket-icon.png" alt="Basket Icon" style="width: 30px; height: 30px;">
+            <span id="basket-count">0</span> <!-- Initial count set to 0 -->
+        </a>
+    </header>
+
+    <main>
+        <section id="products">
+            <h2>Our Products</h2>
+            <div class="product" id="bracelet">
+                <h3>Paracord Bracelet</h3>
+                <img src="images/bracelet.jpg" alt="Paracord Bracelet">
+                <p>Handmade paracord bracelet available in multiple colors.</p>
+                <p>Price: $10.00</p>
+                <button onclick="openModal('Paracord Bracelet', 10)">Add to Basket</button>
+            </div>
+            <div class="product" id="window-breaker">
+                <h3>Window Breaker</h3>
+                <img src="images/window-breaker.jpg" alt="Window Breaker">
+                <p>Essential tool for emergencies, handmade with care.</p>
+                <p>Price: $15.00</p>
+                <button onclick="openModal('Window Breaker', 15)">Add to Basket</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Handmade Paracord Creations</p>
+    </footer>
+
+    <!-- Modal for Quantity Selection -->
+    <div id="quantity-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Quantity</h2> <!-- Updated heading text -->
+            <p id="modal-product-name"></p>
+            <div class="quantity-control">
+                <button onclick="changeQuantity(-1)">&#8722;</button>
+                <input type="number" id="modal-quantity" min="1" value="1" />
+                <button onclick="changeQuantity(1)">&#43;</button>
+            </div>
+            <br>
+            <button onclick="addToBasketFromModal()">Add to Basket</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+    <script>
+        const basket = {};
+        let currentProduct = '';
+        let currentPrice = 0;
+
+        function openModal(productName, price) {
+            currentProduct = productName;
+            currentPrice = price;
+            document.getElementById('modal-product-name').textContent = `Product: ${productName} - Price: $${price.toFixed(2)}`;
+            document.getElementById('quantity-modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('quantity-modal').style.display = 'none';
+        }
+
+        function changeQuantity(amount) {
+            const quantityInput = document.getElementById('modal-quantity');
+            let currentQuantity = parseInt(quantityInput.value);
+            if (currentQuantity + amount >= 1) {
+                quantityInput.value = currentQuantity + amount;
+            }
+        }
+
+        function addToBasketFromModal() {
+            const quantity = parseInt(document.getElementById('modal-quantity').value);
+            if (quantity <= 0) return;
+
+            if (basket[currentProduct]) {
+                basket[currentProduct].quantity += quantity;
+            } else {
+                basket[currentProduct] = { price: currentPrice, quantity: quantity };
+            }
+
+            // Update local storage and basket icon count
+            localStorage.setItem('basket', JSON.stringify(basket));
+            updateBasketCount();
+            closeModal();
+        }
+
+        function updateBasketCount() {
+            const count = Object.values(basket).reduce((acc, product) => acc + product.quantity, 0);
+            document.getElementById('basket-count').textContent = count;
+        }
+
+        window.onload = function() {
+            // Load basket from local storage on page load
+            const storedBasket = JSON.parse(localStorage.getItem('basket')) || {};
+            for (const product in storedBasket) {
+                basket[product] = storedBasket[product];
+            }
+            updateBasketCount();
+        };
+
+        // Close the modal when clicking anywhere outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('quantity-modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

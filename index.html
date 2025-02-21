@@ -5,8 +5,102 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Biker Handmade Paracord Creations</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Existing modal and header styles, plus new basket icon styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0, 0, 0); /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+            padding-top: 100px; /* Location of the box */
+        }
+
+        /* Modal styles */
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto; /* Center it */
+            padding: 10px; /* Padding inside */
+            border: 1px solid #888;
+            width: 100px; /* Set width of modal */
+            height: 100px; /* Set height of modal */
+            border-radius: 10px; /* Rounded corners */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Quantity Input Styles */
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .quantity-control input {
+            width: 50px;
+            text-align: center;
+            margin: 0 10px;
+            font-size: 16px;
+        }
+
+        .quantity-control button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 0 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .quantity-control button:hover {
+            background-color: #45a049; /* Darker green */
+        }
+
+        /* New Basket Icon Styles */
+        #basket-icon {
+            position: relative;
+            cursor: pointer;
+        }
+
+        #basket-count {
+            position: absolute;
+            top: -30px;
+            right: -20px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
+
     <header>
         <h1>Handmade Paracord Creations</h1>
         <nav>
@@ -15,8 +109,8 @@
                 <li><a href="gallery.html">Gallery</a></li>
                 <li><a href="contact.html">Contact</a></li>
                 <li><a href="about.html">About Us</a></li>
-                <li><a href="signup.html">Sign Up</a></li>
-                <li><a href="login.html">Login</a></li>
+                <li><a href="login.html">Login</a></li> <!-- Added Login link -->
+                <li><a href="signup.html">Sign Up</a></li> <!-- Added Sign Up link -->
             </ul>
         </nav>
         <a href="basket.html" id="basket-icon">
@@ -53,7 +147,7 @@
     <div id="quantity-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">×</span>
-            <h2>Quantity</h2>
+            <h2>Quantity</h2> <!-- Updated heading text -->
             <p id="modal-product-name"></p>
             <div class="quantity-control">
                 <button onclick="changeQuantity(-1)">−</button>
@@ -66,6 +160,7 @@
     </div>
 
     <script src="script.js"></script>
+
     <script>
         const basket = JSON.parse(localStorage.getItem('basket')) || {};
         let currentProduct = '';
@@ -100,6 +195,7 @@
                 basket[currentProduct] = { price: currentPrice, quantity: quantity };
             }
 
+            // Update local storage and basket icon count
             localStorage.setItem('basket', JSON.stringify(basket));
             updateBasketCount();
             closeModal();
@@ -111,7 +207,7 @@
         }
 
         window.onload = function() {
-            updateBasketCount();
+            updateBasketCount(); // Initialize basket count on page load
         };
 
         // Close the modal when clicking anywhere outside of it

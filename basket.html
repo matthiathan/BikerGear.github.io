@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Basket - Biker Handmade Paracord Creations</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 24px;
+        }
+
+        #basket-items {
+            list-style: none;
+            padding: 0;
+        }
+
+        #basket-items li {
+            margin-bottom: 10px;
+        }
+
+        #total-price {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        #checkout-button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #checkout-button:hover {
+            background-color: #45a049;
+        }
+
+        .remove-control {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .remove-control input {
+            width: 40px;
+            text-align: center;
+            margin-right: 5px;
+        }
+
+        .remove-control button {
+            background-color: #f44336; /* Red */
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin-left: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .remove-control button:hover {
+            background-color: #d32f2f; /* Darker Red */
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Shopping Basket</h1>
+    <a href="index.html" id="home-link">Home</a>
+</header>
+
+<main>
+    <section id="basket">
+        <h2>Your Items</h2>
+        <ul id="basket-items"></ul>
+        <p><strong>Total Price: $<span id="total-price">0.00</span></strong></p>
+        <button id="checkout-button" onclick="checkout()">Checkout</button>
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2023 Handmade Paracord Creations</p>
+</footer>
+
+<script>
+    const basket = JSON.parse(localStorage.getItem('basket')) || {};
+    const basketItems = document.getElementById('basket-items');
+    const totalPriceElem = document.getElementById('total-price');
+    let totalPrice = 0;
+
+    function updateBasketDisplay() {
+        basketItems.innerHTML = '';
+        totalPrice = 0;
+
+        for (const product in basket) {
+            const productInfo = basket[product];
+            const li = document.createElement('li');
+            li.textContent = `${product} - Quantity: ${productInfo.quantity} - Price: $${(productInfo.quantity * productInfo.price).toFixed(2)}`;
+            
+            // Add input for removing items
+            const removeDiv = document.createElement('div');
+            removeDiv.className = 'remove-control';
+            const removeInput = document.createElement('input');
+            removeInput.type = 'number';
+            removeInput.min = 1;
+            removeInput.max = productInfo.quantity; // Limit max to available quantity
+            removeInput.value = 1; // Default to 1
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'Remove';
+            removeButton.onclick = () => removeFromBasket(product, parseInt(removeInput.value));
+
+            removeDiv.appendChild(removeInput);
+            removeDiv.appendChild(removeButton);
+            li.appendChild(removeDiv);
+            
+            basketItems.appendChild(li);
+            totalPrice += productInfo.quantity * productInfo.price;
+        }
+
+        totalPriceElem.textContent = totalPrice.toFixed(2);
+    }
+
+    function removeFromBasket(product, quantity) {
+        if (basket[product]) {
+            if (basket[product].quantity > quantity) {
+                basket[product].quantity -= quantity;
+            } else {
+                delete basket[product]; // Remove product if quantity is zero
+            }
+            localStorage.setItem('basket', JSON.stringify(basket));
+            updateBasketDisplay();
+        }
+    }
+
+    function checkout() {
+        if (Object.keys(basket).length === 0) {
+            alert('Your basket is empty. Please add items to your basket.');
+            return;
+        }
+
+        // Prepare the email content
+        const orderDetails = [];
+        for (const product in basket) {
+            const { price, quantity } = basket[product];
+            orderDetails.push(`${product} - Quantity: ${quantity} - Total Price: $${(price * quantity).toFixed(2)}`);
+        }
+        
+        const emailContent = {
+            to: 'mattcoombes247@gmail.com',
+            subject: 'New Order from Biker Handmade Paracord Creations',
+            message: `New Order:\n\n${orderDetails.join('\n')}\n\nTotal: $${totalPrice.toFixed(2)}`
+        };
+
+        // Send the order details to the server
+        fetch('/send-email', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(emailContent)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Thank you for your order! A confirmation email has been sent.');
+                // Clear the basket if needed
+                localStorage.removeItem('basket');
+                updateBasketDisplay(); // Refresh the display
+            } else {
+                alert('There was an error with your order. Please try again.');
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('There was an error sending your order. Please try again.');
+        });
+    }
+
+    // Initial display update
+    updateBasketDisplay();
+</script>
+</body>
+</html>
